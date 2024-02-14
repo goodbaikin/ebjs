@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package="github.com/goodbaikin/ebjs/api";
+
+service Encoder {
+    rpc Encode(EncodeRequest) returns (stream EncodeProgress) {}
+}
+
+message EncodeRequest {
+    string input = 1;
+    string output = 2;
+    uint64 channel_id = 3;
+    bool is_dual_mono_mode = 4;
+}
+
+message EncodeProgress {
+    string progress = 1;
+}
