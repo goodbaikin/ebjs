@@ -14,9 +14,9 @@ type Server struct {
 	api.UnimplementedEncoderServer
 }
 
-func NewServer(basedir, recordedDir string, debug bool) Server {
+func NewServer(basedir, recordedDir string, encodeOption *encode.EncodeOptions, debug bool) Server {
 	s := Server{
-		encoder: encode.NewEncoder(basedir, recordedDir),
+		encoder: encode.NewEncoder(basedir, recordedDir, encodeOption),
 		debug:   debug,
 	}
 	return s

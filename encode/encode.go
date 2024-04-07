@@ -9,18 +9,20 @@ import (
 )
 
 type Encoder struct {
-	basedir     string
-	recordedDir string
-	logodir     string
-	jldir       string
+	basedir       string
+	recordedDir   string
+	logodir       string
+	jldir         string
+	encodeOptions *EncodeOptions
 }
 
-func NewEncoder(basedir, recordedDir string) Encoder {
+func NewEncoder(basedir, recordedDir string, encodeOptions *EncodeOptions) Encoder {
 	return Encoder{
-		basedir:     basedir,
-		recordedDir: recordedDir,
-		logodir:     filepath.Join(basedir, "logo"),
-		jldir:       filepath.Join(basedir, "JL"),
+		basedir:       basedir,
+		recordedDir:   recordedDir,
+		logodir:       filepath.Join(basedir, "logo"),
+		jldir:         filepath.Join(basedir, "JL"),
+		encodeOptions: encodeOptions,
 	}
 }
 
@@ -128,7 +130,7 @@ func (e *Encoder) Encode(input string, output string, channelID uint64, isDualMo
 		return fmt.Errorf("ffprobe failed: %v", err)
 	}
 
-	if err = ffmpeg(mergedAvsPath, filepath.Join(e.recordedDir, output), isDualMonoMode, logger); err != nil {
+	if err = ffmpeg(mergedAvsPath, filepath.Join(e.recordedDir, output), isDualMonoMode, e.encodeOptions, logger); err != nil {
 		return fmt.Errorf("ffmpeg failed: %v", err)
 	}
 

@@ -12,7 +12,11 @@ RUN apt-get update &&\
     g++ \
     pkg-config \
     libdevil-dev \
+    intel-media-va-driver-non-free \
+    libva-dev \
+    libmfx-dev \
     libx264-dev \
+    libfdk-aac-dev \
     libvpx-dev \
     libvorbis-dev
 
@@ -24,16 +28,18 @@ RUN git clone https://github.com/AviSynth/AviSynthPlus.git &&\
   make &&\
   make install PREFIX=/usr/local
 
-RUN git clone https://github.com/mstorsjo/fdk-aac.git &&\
-  cd fdk-aac &&\
-  ./autogen.sh &&\
-  ./configure &&\
-  make &&\
-  make install
-
 RUN git clone --depth 1 https://git.ffmpeg.org/ffmpeg.git &&\
   cd ffmpeg &&\
-  ./configure --enable-gpl --enable-avisynth --enable-libx264 --enable-libvpx --enable-libvorbis --enable-libfdk-aac --enable-nonfree &&\
+  ./configure \
+    --enable-gpl \
+    --enable-avisynth \
+    --enable-libmfx \
+    --enable-libx264 \
+    --enable-libvpx \
+    --enable-libvorbis \
+    --enable-libfdk-aac \
+    --enable-nonfree \
+    &&\
   make &&\
   make install
 
@@ -77,7 +83,14 @@ RUN apt-get update &&\
   apt-get install --no-install-recommends -y \
     libdevil1c2 \
     libvpx7 \
-    libx264-163 &&\
+    libx264-163 \
+    libfdk-aac2 \
+    intel-media-va-driver-non-free \ 
+    libmfx1 \
+    libva2 \
+    libva-drm2 \
+    libva-x11-2 \
+    &&\
   apt-get clean &&\
   rm -rf /var/lib/apt/lists
 ADD bin/ebjs /ebjs

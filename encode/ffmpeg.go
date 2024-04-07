@@ -53,13 +53,13 @@ func ffprobe(avsPath string, logger func(string)) error {
 	}, logger)
 }
 
-func ffmpeg(avsPath string, outputPath string, isDualMonoMode bool, logger func(string)) error {
+func ffmpeg(avsPath string, outputPath string, isDualMonoMode bool, option *EncodeOptions, logger func(string)) error {
 	args := []string{
 		"-f", "avisynth",
 		"-i", avsPath,
 		"-vf", "yadif,scale=1920:1080",
-		"-c:v", "libx264",
-		"-c:a", "aac",
+		"-c:v", option.vcodec,
+		"-c:a", option.acodec,
 		"-preset", "veryfast",
 		"-progress", "-",
 		outputPath,
