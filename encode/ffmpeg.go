@@ -54,19 +54,32 @@ func ffprobe(avsPath string, logger func(string)) error {
 }
 
 func ffmpeg(avsPath string, outputPath string, isDualMonoMode bool, option *EncodeOptions, logger func(string)) error {
-	args := []string{
+	args := []string{}
+
+	if option.hwaccel != "" {
+		args = append(args, "-hwaccel", option.hwaccel)
+	}
+	if option.hwaccelOutputFormat != "" {
+		args = append(args, "-hwaccel_output_format", option.hwaccelOutputFormat)
+	}
+	if option.vaapiDevice != "" {
+		args = append(args, "-vaapi_device", option.vaapiDevice)
+	}
+
+	args = append(args, []string{
 		"-f", "avisynth",
 		"-i", avsPath,
-		"-vf", "yadif,scale=1920:1080",
 		"-c:v", option.vcodec,
 		"-c:a", option.acodec,
-		"-preset", "veryfast",
 		"-progress", "-",
-		outputPath,
+	}...)
+	if option.vf != "" {
+		args = append(args, "-vf", option.vf)
 	}
 	if isDualMonoMode {
 		args = append(args, "-dual_mono_mode", "main")
 	}
+	args = append(args, outputPath)
 
 	return execute("ffmpeg", args, logger)
 }

@@ -19,11 +19,27 @@ func main() {
 	debug := flag.Bool("debug", false, "Enable debug")
 	vcodec := flag.String("vcodec", "libx264", "video codec for encoding")
 	acodec := flag.String("acodec", "libfdk_aac", "audio codec for encoding")
+	hwaccel := flag.String("hwaccel", "", "use hardware acceleration")
+	hwaccelOutputFormat := flag.String("hwaccel_output_format", "", "output format for hwaccel")
+	vaapiDevice := flag.String("vaapi_device", "", "set vaapi device")
+	vf := flag.String("vf", "", "set video filter")
 	flag.Parse()
 
 	encodeOptions := encode.NewEncodeOptions()
-	opts := []encode.EncodeOption{encode.WithVCodec(*vcodec)}
-	opts = append(opts, encode.WithACodec(*acodec))
+	opts := []encode.EncodeOption{
+		encode.WithVCodec(*vcodec),
+		encode.WithACodec(*acodec),
+		encode.WithVF(*vf),
+	}
+	if *hwaccel != "" {
+		opts = append(opts, encode.WithHWAccel(*hwaccel))
+	}
+	if *hwaccelOutputFormat != "" {
+		opts = append(opts, encode.WithHWAccelOutputFormat(*hwaccelOutputFormat))
+	}
+	if *vaapiDevice != "" {
+		opts = append(opts, encode.WithVAAPIDevice(*vaapiDevice))
+	}
 	for _, opt := range opts {
 		opt(encodeOptions)
 	}
